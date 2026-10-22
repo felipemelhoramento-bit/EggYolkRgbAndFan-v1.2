@@ -11,22 +11,9 @@
     <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            touch-action: manipulation;
-        }
-        
-        /* Clippings internos para recorte da área de captura */
+        body { font-family: 'Inter', sans-serif; touch-action: manipulation; }
         .shape-circle { clip-path: circle(50% at 50% 50%); }
-        .shape-square { clip-path: inset(0% 0% 0% 0%); }
-        .shape-triangle { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
-        .shape-pentagon { clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); }
-        .shape-hexagon { clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); }
-
-        .shape-transition {
-            transition: clip-path 0.3s ease-in-out, width 0.1s ease-out, height 0.1s ease-out;
-        }
-
+        .shape-transition { transition: width 0.1s ease-out, height 0.1s ease-out; }
         .no-scrollbar::-webkit-scrollbar { height: 4px; }
         .no-scrollbar::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); border-radius: 4px; }
         .no-scrollbar::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.5); border-radius: 4px; }
@@ -53,25 +40,6 @@
         </div>
 
         <div class="flex items-center gap-2.5 shrink-0">
-            <!-- Seletor de Formas -->
-            <div class="flex items-center gap-1.5 bg-slate-950/70 p-1 rounded-full border border-slate-800/80">
-                <button onclick="setShape('circle')" id="btn-circle" class="shape-btn w-8 h-8 rounded-full flex items-center justify-center bg-amber-500 text-slate-950 font-bold shadow-md transition-all active:scale-95 hover:bg-amber-400" title="Círculo">
-                    <div class="w-3.5 h-3.5 rounded-full bg-current"></div>
-                </button>
-                <button onclick="setShape('triangle')" id="btn-triangle" class="shape-btn w-8 h-8 rounded-full flex items-center justify-center bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all active:scale-95" title="Triângulo">
-                    <div class="w-3.5 h-3.5 shape-triangle bg-current"></div>
-                </button>
-                <button onclick="setShape('square')" id="btn-square" class="shape-btn w-8 h-8 rounded-full flex items-center justify-center bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all active:scale-95" title="Quadrado">
-                    <div class="w-3 h-3 rounded-sm bg-current"></div>
-                </button>
-                <button onclick="setShape('pentagon')" id="btn-pentagon" class="shape-btn w-8 h-8 rounded-full flex items-center justify-center bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all active:scale-95" title="Pentágono">
-                    <div class="w-3.5 h-3.5 shape-pentagon bg-current"></div>
-                </button>
-                <button onclick="setShape('hexagon')" id="btn-hexagon" class="shape-btn w-8 h-8 rounded-full flex items-center justify-center bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all active:scale-95" title="Hexágono">
-                    <div class="w-3.5 h-3.5 shape-hexagon bg-current"></div>
-                </button>
-            </div>
-
             <!-- Slider de Tamanho da FC -->
             <div class="flex items-center gap-1.5 bg-slate-950/70 px-2.5 py-1 rounded-xl border border-slate-800/80">
                 <i class="fa-solid fa-compress text-[10px] text-slate-400" title="Reduzir"></i>
@@ -108,16 +76,12 @@
         <div class="relative w-full h-full flex items-center justify-center bg-black">
             <canvas id="display-canvas" class="w-full h-full object-cover"></canvas>
 
-            <!-- Figura Central com Borda SVG Dinâmica Inteiriça -->
             <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
                 <div id="central-figure-wrapper" style="width: 240px; height: 240px;" class="relative pointer-events-auto cursor-crosshair flex items-center justify-center">
-                    
-                    <!-- Borda SVG que desenha a linha contínua perfeita para qualquer forma -->
                     <svg id="central-svg-border" class="absolute inset-0 w-full h-full pointer-events-none z-10" viewBox="0 0 100 100">
-                        <circle id="svg-shape-element" cx="50" cy="50" r="48" fill="none" stroke="#22d3ee" stroke-width="2.5" />
+                        <circle cx="50" cy="50" r="48" fill="none" stroke="#22d3ee" stroke-width="2.5" />
                     </svg>
 
-                    <!-- Área da imagem recortada -->
                     <div id="central-figure" class="w-full h-full shape-circle shape-transition bg-transparent overflow-hidden">
                         <canvas id="fc-canvas" class="hidden"></canvas>
                     </div>
@@ -134,28 +98,40 @@
         </div>
     </main>
 
-    <!-- PAINEL INFERIOR: RESULTADOS YOLKFAN -->
+    <!-- PAINEL INFERIOR -->
     <footer class="relative z-20 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 p-3 sm:p-4 shadow-2xl flex flex-col gap-3">
         <div class="flex items-center justify-between gap-2 max-w-full mx-auto w-full px-1">
-            <div class="flex items-center gap-2">
-                <div id="color-preview" class="w-6 h-6 rounded-lg border border-slate-600 shadow-inner bg-black" title="RGB Amostrado"></div>
-                <div class="flex items-center gap-2">
-                    <span class="text-xs font-semibold text-slate-300">RGB Médio (FC):</span>
-                    <span id="rgb-values" class="font-mono text-cyan-400 text-xs font-bold bg-slate-950 px-2 py-0.5 rounded border border-slate-800">R: 0 | G: 0 | B: 0</span>
+            <div class="flex items-center gap-3 overflow-x-auto no-scrollbar">
+                <div id="color-preview" class="w-7 h-7 rounded-lg border border-slate-600 shadow-inner bg-black shrink-0" title="Cor Amostrada"></div>
+                
+                <div class="flex items-center gap-3 shrink-0">
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-[11px] font-semibold text-slate-400">Média:</span>
+                        <span id="rgb-mean-values" class="font-mono text-cyan-400 text-[11px] font-bold bg-slate-950 px-2 py-0.5 rounded border border-slate-800">R: 0 | G: 0 | B: 0</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-[11px] font-semibold text-slate-400">Mediana:</span>
+                        <span id="rgb-median-values" class="font-mono text-emerald-400 text-[11px] font-bold bg-slate-950 px-2 py-0.5 rounded border border-slate-800">R: 0 | G: 0 | B: 0</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 hidden md:flex">
+                        <span class="text-[11px] font-semibold text-slate-400">Croma (r, g):</span>
+                        <span id="rgb-norm-values" class="font-mono text-purple-400 text-[11px] font-bold bg-slate-950 px-2 py-0.5 rounded border border-slate-800">r: 0.00 | g: 0.00</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 shrink-0">
                 <div class="bg-slate-950/80 px-2.5 py-1 rounded-lg border border-slate-800 text-xs flex items-center gap-1.5">
-                    <span class="text-slate-400">Pixels Amostrados:</span>
-                    <span id="total-pixels-count" class="font-mono font-bold text-emerald-400">0</span>
+                    <span class="text-slate-400">Pixels:</span>
+                    <span id="total-pixels-count" class="font-mono font-bold text-amber-400">0</span>
                 </div>
-                <button onclick="copyValues()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs px-3 py-1 rounded-lg border border-slate-700 flex items-center gap-1.5 transition-all">
+                <button onclick="copyValues()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs px-3 py-1.5 rounded-lg border border-slate-700 flex items-center gap-1.5 transition-all">
                     <i class="fa-regular fa-copy"></i> Copiar
                 </button>
             </div>
         </div>
 
+        <!-- Card YolkFan -->
         <div class="w-full bg-slate-950/90 border border-slate-800 rounded-xl p-3 shadow-inner flex items-center justify-between gap-3">
             <div class="flex items-center gap-3">
                 <div class="flex flex-col items-center justify-center bg-gradient-to-b from-amber-500 to-orange-600 text-slate-950 rounded-xl px-4 py-2 shadow-lg min-w-[75px]">
@@ -193,11 +169,13 @@
         let fcCanvas = document.getElementById('fc-canvas');
         let fcCtx = fcCanvas.getContext('2d', { willReadFrequently: true });
 
-        let currentShape = 'circle';
         let currentFacingMode = 'user';
         let isFrozen = false;
         let animationFrameId = null;
-        let lastR = 0, lastG = 0, lastB = 0;
+
+        let meanR = 0, meanG = 0, meanB = 0;
+        let medianR = 0, medianG = 0, medianB = 0;
+        let cromaR = 0, cromaG = 0;
         let currentYolkMatch = null;
 
         const YOLKFAN_TABLE = [
@@ -219,9 +197,14 @@
             { level: 16, r: 230, g: 50,  b: 0,   hex: "#E63200", name: "Laranja Profundo / Avermelhado" }
         ];
 
-        window.addEventListener('load', () => {
-            initCamera();
+        // Pré-calcula coordenadas de cromaticidade r e g da tabela oficial
+        YOLKFAN_TABLE.forEach(item => {
+            const sum = item.r + item.g + item.b;
+            item.normR = item.r / sum;
+            item.normG = item.g / sum;
         });
+
+        window.addEventListener('load', () => { initCamera(); });
 
         async function initCamera() {
             const loadingOverlay = document.getElementById('loading-overlay');
@@ -272,39 +255,6 @@
             document.getElementById('size-label').textContent = `${sizeVal}px`;
         }
 
-        // Atualização dinâmica da borda SVG de cada polígono/forma
-        function setShape(shape) {
-            currentShape = shape;
-            const centralFigure = document.getElementById('central-figure');
-            const svgContainer = document.getElementById('central-svg-border');
-            
-            centralFigure.className = `w-full h-full shape-${shape} shape-transition bg-transparent overflow-hidden`;
-
-            // Gerar o elemento SVG exato para contorno 100% contínuo
-            if (shape === 'circle') {
-                svgContainer.innerHTML = `<circle cx="50" cy="50" r="48" fill="none" stroke="#22d3ee" stroke-width="2.5" />`;
-            } else if (shape === 'square') {
-                svgContainer.innerHTML = `<rect x="1.5" y="1.5" width="97" height="97" fill="none" stroke="#22d3ee" stroke-width="2.5" />`;
-            } else if (shape === 'triangle') {
-                svgContainer.innerHTML = `<polygon points="50,1.5 1.5,98.5 98.5,98.5" fill="none" stroke="#22d3ee" stroke-width="2.5" stroke-linejoin="round" />`;
-            } else if (shape === 'pentagon') {
-                svgContainer.innerHTML = `<polygon points="50,1.5 98.5,37 80.5,98.5 19.5,98.5 1.5,37" fill="none" stroke="#22d3ee" stroke-width="2.5" stroke-linejoin="round" />`;
-            } else if (shape === 'hexagon') {
-                svgContainer.innerHTML = `<polygon points="25,1.5 75,1.5 98.5,50 75,98.5 25,98.5 1.5,50" fill="none" stroke="#22d3ee" stroke-width="2.5" stroke-linejoin="round" />`;
-            }
-
-            document.querySelectorAll('.shape-btn').forEach(btn => {
-                btn.classList.remove('bg-amber-500', 'text-slate-950', 'shadow-md', 'font-bold');
-                btn.classList.add('bg-slate-800', 'text-slate-300');
-            });
-            const activeBtn = document.getElementById(`btn-${shape}`);
-            if (activeBtn) {
-                activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
-                activeBtn.classList.add('bg-amber-500', 'text-slate-950', 'shadow-md', 'font-bold');
-            }
-            showToast(`Forma: ${shape.toUpperCase()}`, 'info');
-        }
-
         function toggleFreeze() {
             isFrozen = !isFrozen;
             const freezeBtn = document.getElementById('freeze-btn');
@@ -342,16 +292,27 @@
                 fcCtx.clearRect(0, 0, fcCanvas.width, fcCanvas.height);
                 fcCtx.drawImage(videoElement, srcX, srcY, srcW, srcH, 0, 0, fcCanvas.width, fcCanvas.height);
 
-                processYolkFanAnalysis(fcCtx, fcCanvas.width, fcCanvas.height, currentShape);
+                processYolkFanAnalysis(fcCtx, fcCanvas.width, fcCanvas.height);
             }
             if (!isFrozen) animationFrameId = requestAnimationFrame(processFrame);
         }
 
-        function processYolkFanAnalysis(ctx, width, height, shape) {
+        function getMedian(arr) {
+            if (arr.length === 0) return 0;
+            const sorted = arr.slice().sort((a, b) => a - b);
+            const mid = Math.floor(sorted.length / 2);
+            return sorted.length % 2 !== 0 ? sorted[mid] : Math.round((sorted[mid - 1] + sorted[mid]) / 2);
+        }
+
+        function processYolkFanAnalysis(ctx, width, height) {
             const imageData = ctx.getImageData(0, 0, width, height);
             const data = imageData.data;
             
-            let totalR = 0, totalG = 0, totalB = 0, totalValidPixels = 0;
+            const rValues = [];
+            const gValues = [];
+            const bValues = [];
+            let sumR = 0, sumG = 0, sumB = 0;
+            
             const cx = width / 2;
             const cy = height / 2;
             const radius = width / 2;
@@ -359,60 +320,77 @@
             const step = 2;
             for (let y = 0; y < height; y += step) {
                 for (let x = 0; x < width; x += step) {
-                    let inside = false;
-
-                    if (shape === 'circle') {
-                        const dx = x - cx, dy = y - cy;
-                        if ((dx * dx + dy * dy) <= (radius * radius)) inside = true;
-                    } else if (shape === 'square') {
-                        inside = true;
-                    } else if (shape === 'triangle') {
-                        const denom = (height)*(cx - width) + (width)*(0 - height);
-                        const a = ((height)*(x - width) + (width)*(y - height)) / denom;
-                        const b = ((0 - height)*(x - width) + (cx - width)*(y - height)) / denom;
-                        if (a >= 0 && b >= 0 && (1 - a - b) >= 0) inside = true;
-                    } else if (shape === 'pentagon' || shape === 'hexagon') {
-                        const sides = shape === 'pentagon' ? 5 : 6;
-                        const angle = Math.atan2(y - cy, x - cx);
-                        const dist = Math.hypot(x - cx, y - cy);
-                        const rPolygon = radius * (Math.cos(Math.PI / sides) / Math.cos((angle % (2 * Math.PI / sides)) - (Math.PI / sides)));
-                        if (dist <= rPolygon) inside = true;
-                    }
-
-                    if (inside) {
+                    const dx = x - cx;
+                    const dy = y - cy;
+                    
+                    if ((dx * dx + dy * dy) <= (radius * radius)) {
                         const index = (y * width + x) * 4;
-                        totalR += data[index];
-                        totalG += data[index + 1];
-                        totalB += data[index + 2];
-                        totalValidPixels++;
+                        const r = data[index];
+                        const g = data[index + 1];
+                        const b = data[index + 2];
+
+                        // FILTRO ADAPTATIVO: Elimina sombras muito profundas (R < 100) e estouros de brilho
+                        const brightness = (r + g + b) / 3;
+                        if (r >= 100 && brightness >= 60 && brightness <= 245) {
+                            rValues.push(r);
+                            gValues.push(g);
+                            bValues.push(b);
+                            sumR += r;
+                            sumG += g;
+                            sumB += b;
+                        }
                     }
                 }
             }
 
+            const totalValidPixels = rValues.length;
+
             if (totalValidPixels > 0) {
-                lastR = Math.round(totalR / totalValidPixels);
-                lastG = Math.round(totalG / totalValidPixels);
-                lastB = Math.round(totalB / totalValidPixels);
+                meanR = Math.round(sumR / totalValidPixels);
+                meanG = Math.round(sumG / totalValidPixels);
+                meanB = Math.round(sumB / totalValidPixels);
+
+                medianR = getMedian(rValues);
+                medianG = getMedian(gValues);
+                medianB = getMedian(bValues);
+
+                const sumMed = medianR + medianG + medianB;
+                cromaR = (medianR / sumMed).toFixed(3);
+                cromaG = (medianG / sumMed).toFixed(3);
             } else {
-                lastR = 0; lastG = 0; lastB = 0;
+                meanR = 0; meanG = 0; meanB = 0;
+                medianR = 0; medianG = 0; medianB = 0;
+                cromaR = 0; cromaG = 0;
             }
 
-            document.getElementById('rgb-values').textContent = `R: ${lastR} | G: ${lastG} | B: ${lastB}`;
-            document.getElementById('color-preview').style.backgroundColor = `rgb(${lastR}, ${lastG}, ${lastB})`;
+            document.getElementById('rgb-mean-values').textContent = `R: ${meanR} | G: ${meanG} | B: ${meanB}`;
+            document.getElementById('rgb-median-values').textContent = `R: ${medianR} | G: ${medianG} | B: ${medianB}`;
+            
+            const normEl = document.getElementById('rgb-norm-values');
+            if (normEl) normEl.textContent = `r: ${cromaR} | g: ${cromaG}`;
+            
+            document.getElementById('color-preview').style.backgroundColor = `rgb(${medianR}, ${medianG}, ${medianB})`;
             document.getElementById('total-pixels-count').textContent = totalValidPixels;
 
+            // COMPARAÇÃO CROMÁTICA ISOLADA DE LUMINOSIDADE
             let closestItem = YOLKFAN_TABLE[0];
             let minDistance = Infinity;
 
+            const sampleSum = medianR + medianG + medianB;
+            const sampleNormR = sampleSum > 0 ? medianR / sampleSum : 0;
+            const sampleNormG = sampleSum > 0 ? medianG / sampleSum : 0;
+
             for (let i = 0; i < YOLKFAN_TABLE.length; i++) {
                 const item = YOLKFAN_TABLE[i];
-                const dist = Math.sqrt(
-                    Math.pow(lastR - item.r, 2) +
-                    Math.pow(lastG - item.g, 2) +
-                    Math.pow(lastB - item.b, 2)
-                );
-                if (dist < minDistance) {
-                    minDistance = dist;
+                
+                // Distância Euclidiana no espaço de Cromaticidade (r, g) puro
+                const distR = Math.pow(sampleNormR - item.normR, 2);
+                const distG = Math.pow(sampleNormG - item.normG, 2);
+
+                const totalDist = Math.sqrt(distR + (1.5 * distG));
+
+                if (totalDist < minDistance) {
+                    minDistance = totalDist;
                     closestItem = item;
                 }
             }
@@ -436,8 +414,9 @@
             report += `Nível YolkFan: ${currentYolkMatch.level}\n`;
             report += `Descrição: ${currentYolkMatch.name}\n`;
             report += `HEX Ref.: ${currentYolkMatch.hex} | RGB Ref.: (${currentYolkMatch.r}, ${currentYolkMatch.g}, ${currentYolkMatch.b})\n`;
-            report += `RGB Capturado (FC): R:${lastR} G:${lastG} B:${lastB}\n`;
-            report += `Forma FC: ${currentShape.toUpperCase()}\n`;
+            report += `RGB Médio (FC): R:${meanR} G:${meanG} B:${meanB}\n`;
+            report += `RGB Mediano (FC): R:${medianR} G:${medianG} B:${medianB}\n`;
+            report += `Cromaticidade Normalizada: r:${cromaR} g:${cromaG}\n`;
 
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(report).then(() => showToast('Relatório copiado!', 'success'));
